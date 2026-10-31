@@ -342,6 +342,19 @@ td strong { color: var(--ink); }
   th { position: static; }
   table { font-size: 14px; }
   th, td { padding: 11px 12px; }
+  /* Phones: each row becomes a card, each cell a labeled line */
+  .tbl-wrap:has(table.stack) { overflow: visible; border: 0; background: none; box-shadow: none; }
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display: block; width: 100%; }
+  table.stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  table.stack tr { background: var(--white); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-sm); margin: 0 0 12px; padding: 4px 0; overflow: hidden; }
+  .tone-dark table.stack tr { background: var(--dark-2); border-color: #2E2822; }
+  table.stack tbody tr:nth-child(even) td, table.stack tbody tr:hover td { background: none; }
+  table.stack td { border-bottom: 1px solid var(--line-2); padding: 10px 16px; font-size: 15px; }
+  table.stack td:last-child { border-bottom: 0; }
+  table.stack td:first-child { font-size: 16px; font-weight: 650; color: var(--ink); padding-top: 14px; }
+  .tone-dark table.stack td:first-child { color: var(--cream, #FFFCF6); }
+  table.stack td[data-label]:not(:first-child)::before { content: attr(data-label); display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+  table.stack td[data-label=""]::before, table.stack td:empty { display: none; }
 }
 .try { display: inline-flex; margin: 6px 8px 0 0; }
 
