@@ -610,3 +610,4 @@ td a.go { white-space: nowrap; font-weight: 600; }
 .related-all { font-weight: 650; text-decoration: none; color: var(--gold-text); }
 .guide-list.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 900px) { .guide-list.three { grid-template-columns: minmax(0, 1fr); } }
+a.btn-gold, a.btn-gold:visited, a.btn-gold:hover { color: var(--gold-ink) !important; text-decoration: none; }

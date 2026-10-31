@@ -329,7 +329,7 @@
   function renderGate(opts) {
     opts = opts || {};
     var checks = ['Where your number comes from, step by step, and which buyers fit', 'What would add the most to your price, in dollars', 'How you would likely be paid, and what you would keep after the deal structure', 'A PDF report by email'];
-    // TODO: confirm law firm follow-up owner with SourceCo before launch (Alia Ballout follows up on the auto calculator).
+    // Follow-up is attributed to a SourceCo advisor (no individual named) until SourceCo assigns an owner for law firm leads.
     return '<div class="gatecard" data-gate>' +
       '<div class="gc-head"><div><p class="gc-k">Free and instant</p><p class="gc-h">See your full breakdown, free</p></div>' + (opts.preview ? '<img class="gc-pdf" src="' + opts.preview + '" alt="" width="84" height="108" loading="lazy">' : '') + '</div>' +
       '<ul class="gc-checks">' + checks.map(function (c) { return '<li>' + c + '</li>'; }).join('') + '</ul>' +
@@ -343,7 +343,7 @@
         '<p class="err" role="alert"></p>' +
       '</form>' +
       '<div class="success" tabindex="-1" role="status"><b>Unlocked.</b> Your full breakdown is now open on this page, and the PDF report is on its way. <em>Prototype: nothing was sent.</em></div>' +
-      '<div class="gc-person"><span class="avatar" aria-hidden="true">AB</span><p><b>Alia Ballout, SourceCo.</b> Alia follows up the same business day. She only calls if you ask for a call. Call or text <a href="tel:+16146995764">+1 (614) 699-5764</a>.</p></div>' +
+      '<div class="gc-person"><span class="avatar" aria-hidden="true">SC</span><p><b>A SourceCo advisor</b> follows up the same business day, and only calls if you ask for a call. Call or text <a href="tel:+16146995764">+1 (614) 699-5764</a>.</p></div>' +
     '</div>';
   }
 
