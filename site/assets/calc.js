@@ -372,11 +372,66 @@
     });
   }
 
+
+  // ---------- Article quick estimate + sticky mobile bar (roadmap articles) ----------
+  function initArtEst(root) {
+    var f = root.querySelector('form');
+    var k = root.querySelector('[data-est-k]'), v = root.querySelector('[data-est-v]'), b = root.querySelector('[data-est-b]');
+    var link = root.querySelector('[data-est-link]');
+    var sticky = document.querySelector('[data-art-sticky]');
+    var sTxt = sticky && sticky.querySelector('[data-sticky-txt]'), sLink = sticky && sticky.querySelector('[data-sticky-link]');
+    var touched = false, started = false;
+    function update() {
+      var d = { practice: f.elements.practice.value, state: M.DEFAULTS.state, revenue: f.elements.revenue.value, profit: f.elements.profit.value, owners: f.elements.owners.value, salary: M.DEFAULTS.salary, orig: '25to50', flow: 'mixed', stay: '1yr' };
+      var r = M.compute(d);
+      k.textContent = touched ? 'Your directional range' : 'Example range';
+      v.textContent = r.empty ? 'Enter your fees' : M.money(r.lo) + ' to ' + M.money(r.hi);
+      b.textContent = r.empty ? '' : 'About ' + (Math.round(r.multMid * 10) / 10) + 'x ' + r.basisLabel + '. ' + r.pathLabel + '.';
+      if (link) {
+        var p = new URLSearchParams({ practice: d.practice, rev: String(M.num(d.revenue)), profit: String(M.num(d.profit)), owners: String(M.num(d.owners)), step: '3' });
+        link.setAttribute('href', link.getAttribute('data-base') + '?' + p.toString() + '#calculator');
+        if (touched && sLink) { sLink.setAttribute('href', link.getAttribute('href')); sLink.firstChild.textContent = 'Full report '; }
+      }
+      if (touched && sTxt && !r.empty) sTxt.textContent = M.money(r.lo) + ' to ' + M.money(r.hi);
+    }
+    f.addEventListener('input', function () {
+      touched = true;
+      if (!started) { started = true; track('calc_start', { source: 'article_estimate' }); }
+      update();
+    });
+    f.querySelectorAll('input[data-money]').forEach(function (inp) { inp.addEventListener('input', function () { liveMoney(inp); }, true); inp.addEventListener('blur', function () { inp.value = fmt(M.num(inp.value)); }); });
+    f.addEventListener('submit', function (e) { e.preventDefault(); if (link) link.click(); });
+    update();
+    // Sticky bar on phones: shows once the estimate card is above the viewport, hides at the closing band and footer.
+    if (sticky && 'IntersectionObserver' in window) {
+      var past = false, atEnd = false;
+      var paint = function () { sticky.hidden = !(past && !atEnd); };
+      new IntersectionObserver(function (es) { es.forEach(function (e) { past = !e.isIntersecting && e.boundingClientRect.top < 0; }); paint(); }).observe(root);
+      var end = document.querySelector('.band') || document.querySelector('footer');
+      if (end) new IntersectionObserver(function (es) { es.forEach(function (e) { atEnd = e.isIntersecting || e.boundingClientRect.top < 0; }); paint(); }).observe(end);
+    }
+  }
+  // Citation links open the collapsed sources list; TOC links open a folded section
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var id = a.getAttribute('href').slice(1);
+    if (/^src-|^sources$/.test(id)) { var d = document.querySelector('details.la-src'); if (d) d.open = true; return; }
+    var sec = id && document.getElementById(id);
+    var more = sec && sec.querySelector && sec.querySelector(':scope > details.la-more');
+    if (more) more.open = true;
+  });
+  document.addEventListener('toggle', function (e) {
+    var d = e.target;
+    if (d.classList && d.classList.contains('la-more') && d.open) { var s = d.closest('section'); track('cta_click', { cta: 'read_more_' + (s ? s.id : '') }); }
+  }, true);
+
   function boot() {
     document.querySelectorAll('[data-gate-mount]').forEach(mountGate);
     document.querySelectorAll('[data-calc]').forEach(initCalc);
     if (location.hash === '#buyer-fit') { var bf = document.getElementById('buyer-fit'); if (bf) setTimeout(function () { bf.scrollIntoView(); }, 60); }
     document.querySelectorAll('[data-mini]').forEach(initMini);
+    document.querySelectorAll('[data-art-est]').forEach(initArtEst);
     document.querySelectorAll('[data-state-filter]').forEach(initStateFilter);
     initToc();
     initReveal();
