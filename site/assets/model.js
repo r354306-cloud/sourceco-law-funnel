@@ -117,10 +117,11 @@
   // level: restrict | open | note | standard
   var STATE_NOTES = {
     AZ: { level: 'open', title: 'Arizona licenses nonlawyer ownership (ABS)', text: 'Arizona licenses alternative business structures, so investors can own part of a firm. 151 entities were licensed by January 2026, including KPMG Law US.', src: ['aslj', 'abaj_kpmg'] },
-    CA: { level: 'restrict', title: 'California limits fee sharing with out-of-state ABS firms', text: 'AB 931, signed October 2025, bars California lawyers from sharing contingency fees with out-of-state ABS firms on contracts from January 1, 2026. It runs to January 1, 2030. MSO fee design needs counsel.', src: ['bloomberg_ab931', 'aslj'] },
+    CA: { level: 'restrict', title: 'California: written client consent, and limits on fee sharing', text: 'Selling a practice needs written notice at least 90 days before transfer and each client\'s written consent. AB 931 bars sharing contingency fees with out-of-state ABS firms on contracts from January 1, 2026 until January 1, 2030. MSO fee design needs counsel.', src: ['ca117', 'bloomberg_ab931', 'aslj'] },
     CO: { level: 'restrict', title: 'Colorado restricts ABS and MSO fee structures', text: 'HB26-1421, effective August 12, 2026, effectively bans ABS firms. MSOs may only be paid flat or hourly fees not tied to profits or recoveries, and clients and competitors can sue.', src: ['hk_co'] },
     DC: { level: 'open', title: 'DC allows limited nonlawyer ownership', text: 'DC has allowed limited nonlawyer ownership since 1991. A Rule 1.17 sale to another lawyer is still the common path.', src: ['sidley'] },
     IL: { level: 'restrict', title: 'Illinois limits MSO fees and influence', text: 'HB 5487, signed August 7, 2026, bars MSOs from interfering with lawyers\' judgment or hiring, and from fees based directly or indirectly on firm revenue, fees or profits.', src: ['hk_il'] },
+    FL: { level: 'note', title: 'Florida: name an inventory attorney', text: 'Florida requires lawyers to designate an inventory attorney who steps in if they cannot practice. Sales follow the standard Rule 1.17 path.', src: ['flbar_inv'] },
     MA: { level: 'note', title: 'Massachusetts: no geographic cease-practice rule', text: 'Massachusetts\' Rule 1.17 does not require the seller to stop practicing in a geographic area. Client notice still applies.', src: ['ma117'] },
     NC: { level: 'note', title: 'North Carolina: the seller can stay on', text: 'North Carolina lets a selling lawyer keep working as the buyer\'s employee, which helps client retention.', src: ['lmnc_sell'] },
     NY: { level: 'note', title: 'New York: the buyer may keep your firm name', text: 'NY Ethics Opinion 1168 (2019) says a buyer may keep the seller\'s firm name if it is not misleading.', src: ['nysba1168'] },
@@ -255,7 +256,7 @@
     if (p.fit === 'high') d.push({ dir: 'up', text: p.label + ' sits in investors\' high-fit group.' });
     if (p.fit === 'low' || p.fit === 'constrained') d.push({ dir: 'down', text: p.label + ' value tends to follow individual lawyers.' });
     if (p.contingency && pipeline > 0) d.push({ dir: 'info', text: 'Your case inventory (' + money(pipeline) + ') is usually paid as cases resolve, on top of this range.' });
-    if (r.path === 'B') d.push({ dir: 'info', text: 'A documented, metrics-based plan can add 1 to 2 turns.' });
+    if (r.path === 'B') d.push({ dir: 'info', text: 'A documented, metrics-based plan can add 1 to 2 turns (one or two more years of EBITDA in the price).' });
     r.drivers = d.slice(0, 4);
     r.w = W;
     return r;
@@ -292,7 +293,6 @@
       var d = nice(compute(v).mid - r.mid);
       if (d > 0) out.push({ label: t[2], v: d });
     }
-    if (r.path === 'B') out.push({ label: 'Document a metrics-based plan: worth 1 to 2 turns', v: nice(r.ebitda), range: nice(2 * r.ebitda) });
     out.sort(function (a, b) { return b.v - a.v; });
     return out.slice(0, 2);
   }
@@ -308,8 +308,8 @@
     estate: { url: 'https://www.sourcecodeals.com/off-market-deal-memos/pacific-northwest-family-law-estate-planning-platform', title: 'Pacific Northwest family law and estate planning platform' },
     realestate: { url: 'https://www.sourcecodeals.com/off-market-deal-memos/multi-office-real-estate-led-law-firm-platform-with-mso-ready-structure', title: 'Multi-office real estate-led law firm platform with MSO-ready structure' }
   };
-  var MEMO_FOR = { pi: 'pi', masstort: 'pi', wc: 'pi', employment: 'pi', family: 'estate', estate: 'estate', realestate: 'realestate' };
-  function memoFor(key) { return LAW_MEMOS[MEMO_FOR[key] || 'pi']; }
+  var MEMO_FOR = { pi: 'pi', masstort: 'pi', wc: 'pi', family: 'estate', estate: 'estate', realestate: 'realestate' };
+  function memoFor(key) { return MEMO_FOR[key] ? LAW_MEMOS[MEMO_FOR[key]] : null; }
   function sign(v) { return (v >= 0 ? '+' : '-') + money(Math.abs(v)); }
   function moneyP(v) {
     var a = Math.abs(v);
@@ -323,8 +323,14 @@
     var p = payout(r), lv = levers(r), memo = memoFor(r.practice.key);
     var payLabel = r.path === 'B' ? 'Using the 70/30 example from one 2026 guide. Terms vary by buyer.' : 'Illustration only: half at close, half as an earnout over several years. Terms vary.';
     var deferLabel = r.path === 'B' ? 'Rollover equity or earnout' : 'Earnout tied to clients who stay';
+    var st = (r.input && r.input.state) || '', fit = r.practice.fit;
+    var strict = { CA: 'California', CO: 'Colorado', IL: 'Illinois', TN: 'Tennessee', TX: 'Texas' }[st];
     var buyers = r.path === 'B'
-      ? ['A regional or national law firm buying for scale', 'An investor-backed services platform (MSO), where your state allows it', 'An Arizona ABS firm, if you are open to licensed outside owners']
+      ? ['A regional or national law firm buying for scale']
+          .concat(fit === 'high' || fit === 'middle'
+            ? ['An investor-backed services platform (MSO)' + (strict ? ', with a flat or cost-plus fee under ' + strict + '\'s rules' : ', where your state allows it')]
+            : ['Investor platforms are less common for this practice area; firm buyers lead'])
+          .concat(st === 'AZ' ? ['An Arizona ABS firm, if you are open to licensed outside owners'] : [])
       : ['Another attorney or local firm, under Rule 1.17', 'An associate or partner as internal successor', 'A regional firm adding your practice area'];
     var lvHtml = lv.length ? lv.map(function (l) { return '<li><span>' + esc(l.label) + '</span><b>+' + money(l.v) + (l.range ? ' to +' + money(l.range) : '') + '</b></li>'; }).join('') : '<li><span>Your inputs are already at the strongest settings in this model.</span><b></b></li>';
     return '<div class="dgrid">' +
@@ -335,7 +341,7 @@
         '<tr><td>' + (r.path === 'B' ? 'Quality of earnings review, about $30K to $50K' : 'Legal and advisory fees') + '</td><td>' + (r.path === 'B' ? '-' + moneyP(p.cost) : 'varies') + '</td></tr>' +
         '<tr class="dtot"><td>Cash at close, before tax</td><td>' + moneyP(p.keep) + '</td></tr>' +
       '</tbody></table><p class="dnote">Pre-tax and illustrative. Taxes depend partly on how goodwill is allocated; see a CPA.</p></div>' +
-      '<div class="dcard"><p class="dk">Which buyers fit</p><ul class="dlist">' + buyers.map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul><a class="dmemo" href="' + memo.url + '" target="_blank" rel="noopener" data-cta="details_memo"><span class="dlive">Live</span>' + esc(memo.title) + '</a></div>' +
+      '<div class="dcard"><p class="dk">Which buyers fit</p><ul class="dlist">' + buyers.map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul>' + (memo ? '<a class="dmemo" href="' + memo.url + '" target="_blank" rel="noopener" data-cta="details_memo"><span class="dlive">Memo</span>' + esc(memo.title) + '</a>' : '<p class="dnote">Your firm would get its own anonymized memo, shared only after you approve it.</p>') + '</div>' +
       '<div class="dcard"><p class="dk">What would add the most to your price</p><ul class="dlevers">' + lvHtml + '</ul><p class="dnote">Changes in the directional midpoint from this model, holding everything else the same.</p></div>' +
     '</div>';
   }
@@ -343,28 +349,29 @@
   // The email gate card (white), matching SourceCo's live calculators.
   function renderGate(opts) {
     opts = opts || {};
-    var checks = ['Where your number comes from, step by step, and which buyers fit', 'What would add the most to your price, in dollars', 'How you would likely be paid, and what you would keep after the deal structure', 'A PDF report by email'];
+    var checks = ['Where your number comes from, step by step, and which buyers fit', 'What would add the most to your price, in dollars', 'How you would likely be paid, and what you would keep after the deal structure', 'Free for owners. No buyer hears your name until you approve an introduction'];
     // Follow-up is attributed to a SourceCo advisor (no individual named) until SourceCo assigns an owner for law firm leads.
     return '<div class="gatecard" data-gate>' +
-      '<div class="gc-head"><div><p class="gc-k">Free and instant</p><p class="gc-h">See your full breakdown, free</p></div>' + (opts.preview ? '<img class="gc-pdf" src="' + opts.preview + '" alt="" width="84" height="108" loading="lazy">' : '') + '</div>' +
+      '<div class="gc-head"><div><p class="gc-k">Free and instant</p><p class="gc-h">See your full breakdown, free</p></div>' + '' + '</div>' +
       '<ul class="gc-checks">' + checks.map(function (c) { return '<li>' + c + '</li>'; }).join('') + '</ul>' +
       '<form class="form" novalidate>' +
         '<!-- PRODUCTION: send to the Webflow form or HubSpot Forms API (see calc.js). Nothing is sent in this prototype. -->' +
         '<label class="fl" for="g-name">Full name</label><input id="g-name" name="name" autocomplete="name" required placeholder="Jane Smith">' +
         '<label class="fl" for="g-email">Email</label><input id="g-email" name="email" type="email" autocomplete="email" required placeholder="you@yourfirm.com">' +
+        '<label class="fl" for="g-role">Your role</label><select id="g-role" name="role" required><option value="">Choose one</option><option value="owner">Owner or equity partner</option><option value="lawyer">Other lawyer at the firm</option><option value="advisor">Advisor, banker or broker</option><option value="other">Other</option></select>' +
         '<label class="fl" for="g-phone">Phone <span class="opt">optional, only used if you ask for a call</span></label><input id="g-phone" name="phone" type="tel" autocomplete="tel" placeholder="(555) 555-0123">' +
         '<fieldset class="gc-next"><legend class="fl">What would help most?</legend>' +
-          [['report', 'Just the report'], ['call', 'A call about my number'], ['buyers', 'Meet buyers who fit']].map(function (o, i) {
-            return '<label class="gc-opt"><input type="radio" name="next" value="' + o[0] + '"' + (i === 0 ? ' checked' : '') + '><span>' + o[1] + '</span></label>';
+          [['report', 'Just the breakdown'], ['call', 'A call about my number'], ['buyers', 'Introductions to buyers who fit']].map(function (o, i) {
+            return '<label class="gc-opt"><input type="radio" name="next" value="' + o[0] + '"><span>' + o[1] + '</span></label>';
           }).join('') +
         '</fieldset>' +
         '<p class="consent">By continuing you agree to SourceCo\'s <a href="https://www.sourcecodeals.com/privacy-policy" target="_blank" rel="noopener">privacy policy</a>.</p>' +
         '<button class="btn-dark btn-block" type="submit" data-cta="report_submit">Show my full breakdown <span class="arrow"></span></button>' +
-        '<p class="gc-note">Free and instant, with a PDF report by email.</p>' +
+        '<p class="gc-note">Free. Your breakdown opens on this page right away.</p>' +
         '<p class="err" role="alert"></p>' +
       '</form>' +
-      '<div class="success" tabindex="-1" role="status"><b>Unlocked.</b> Your full breakdown is now open on this page, and the PDF report is on its way. <em>Prototype: nothing was sent.</em></div>' +
-      '<div class="gc-person"><span class="avatar" aria-hidden="true">SC</span><p><b>A SourceCo advisor</b> follows up the same business day, and only calls if you ask for a call. Call or text <a href="tel:+16146995764">+1 (614) 699-5764</a>.</p></div>' +
+      '<div class="success" tabindex="-1" role="status"><b>Unlocked.</b> Your full breakdown is now open on this page. <em>Prototype: the lead goes to the test sheet only.</em></div>' +
+      '<div class="gc-person"><span class="avatar" aria-hidden="true">SC</span><p><b>Rather talk first?</b> A SourceCo advisor replies within a few hours and only calls if you ask. <a href="tel:+16146995764">+1 (614) 699-5764</a></p></div>' +
     '</div>';
   }
 

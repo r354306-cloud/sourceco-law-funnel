@@ -1181,3 +1181,16 @@ figure.xf figcaption::before { content: none; }
   .start-quick a { font-size: 14px; text-decoration: none; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--cream); }
 }
 .rm-item summary::before { line-height: 1; font-size: 15px; padding-bottom: 2px; box-sizing: border-box; }
+/* Roadmap: team and gates */
+.rm-team { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.rm-team > div { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }
+.rm-team p { margin: 0; font-size: 14.5px; line-height: 1.5; }
+.rm-who { font-size: 17px !important; font-weight: 700; color: var(--ink); }
+.rm-time { font-size: 12.5px !important; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; color: var(--gold-text); margin: 2px 0 8px !important; }
+.rm-gates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.rm-gates div { background: var(--gold-tint); border: 1px solid #EAD9AE; border-radius: 14px; padding: 14px 16px; }
+.rm-gates b { display: block; font-size: 16px; color: var(--ink); }
+.rm-gates span { display: block; font-size: 14px; line-height: 1.5; color: #4D3A12; }
+@media (max-width: 960px) { .rm-team { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .rm-team, .rm-gates { grid-template-columns: minmax(0, 1fr); gap: 8px; } .rm-team > div { padding: 14px 16px; } }
+.gc-opt[hidden] { display: none !important; }

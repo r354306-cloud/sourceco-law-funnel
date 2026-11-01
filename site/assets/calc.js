@@ -31,15 +31,20 @@
 
   // ---------- Lead tier: who SourceCo calls first ----------
   // A = call today, B = same-day email and a call if asked, C = report plus a slow follow-up.
-  function leadTier(r, phone, next) {
-    if (!r || r.empty) return { tier: 'C', points: 0 };
+  // Example numbers (the prefilled default) are never scored: the lead is sent as unscored with no financials.
+  function isExample(r) { var i = (r && r.input) || {}; return M.num(i.revenue) === M.DEFAULTS.revenue && M.num(i.profit) === M.DEFAULTS.profit; }
+  function leadTier(r, phone, next, role) {
+    if (!r || r.empty || isExample(r)) return { tier: 'U', points: 0, example: true };
     var i = r.input || {}, p = 0;
-    p += r.revenue >= 3e6 ? 3 : r.revenue >= 1e6 ? 2 : r.revenue >= 5e5 ? 1 : 0;
+    // Scored on adjusted EBITDA (profit after market pay for the owners), which is what buyers price.
+    p += r.ebitda >= 1e6 ? 3 : r.ebitda >= 4e5 ? 2 : r.ebitda >= 15e4 ? 1 : 0;
     p += { '12mo': 3, capital: 2, '2to3': 1 }[i.timeline] || 0;
     p += { high: 2, middle: 1, neutral: 1 }[r.practice.fit] || 0;
     if (phone) p += 1;
     if (next === 'call' || next === 'buyers') p += 2;
-    return { tier: p >= 7 ? 'A' : p >= 4 ? 'B' : 'C', points: p };
+    var t = p >= 7 ? 'A' : p >= 4 ? 'B' : 'C';
+    if (role && role !== 'owner') t = 'C'; // only owners are scored up
+    return { tier: t, points: p };
   }
   var TIMELINE_L = { curious: 'Just curious', '12mo': 'Selling within 12 months', '2to3': '2 to 3 years out', capital: 'Capital or a partner' };
 
@@ -192,12 +197,19 @@
     });
   }
 
-  // ---------- Buyer Fit Report gate (demo only) ----------
+  // ---------- Full breakdown gate ----------
   var DISPOSABLE = /@(mailinator|guerrillamail|10minutemail|tempmail|temp-mail|yopmail|trashmail|sharklasers|getnada|dispostable)\./i;
   // Gate state is page-wide: one unlock opens every breakdown on the page.
   var UNLOCKED = false, LAST = null;
+  // Buyer introductions for small lawyer-to-lawyer sales (path A) stay off until counsel clears SourceCo's fee on them.
+  var PATH_A_INTROS = false;
   function paintDetails(r) {
     LAST = r;
+    var hideIntros = !PATH_A_INTROS && r && !r.empty && r.path === 'A';
+    document.querySelectorAll('[data-gate] input[name=next][value=buyers]').forEach(function (inp) {
+      var lab = inp.closest('label'); if (lab) lab.hidden = hideIntros;
+      if (hideIntros && inp.checked) { var c = inp.form && inp.form.querySelector('input[name=next][value=call]'); if (c) c.checked = true; }
+    });
     document.querySelectorAll('[data-details]').forEach(function (el) {
       var inner = el.querySelector('.dinner');
       if (inner) inner.innerHTML = M.renderDetails(r);
@@ -221,6 +233,8 @@
       if (!name) { err.textContent = 'Enter your name.'; form.elements.name.focus(); return; }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = 'Enter a valid email.'; form.elements.email.focus(); return; }
       if (DISPOSABLE.test(email)) { err.textContent = 'Please use a firm or personal email, not a temporary one.'; return; }
+      var role = form.elements.role ? form.elements.role.value : 'owner';
+      if (form.elements.role && !role) { err.textContent = 'Choose your role.'; form.elements.role.focus(); return; }
       err.textContent = '';
       // PRODUCTION: POST to the Webflow form or HubSpot Forms API here, e.g.
       // fetch('https://api.hsforms.com/submissions/v3/integration/submit/<portalId>/<formGuid>', { method: 'POST', ... })
@@ -228,7 +242,7 @@
       // (first-touch source/medium/campaign/content/landing). Route tier A to a person the same business day.
       var phone = form.elements.phone ? form.elements.phone.value.trim() : '';
       var next = (form.querySelector('[name=next]:checked') || {}).value || 'report';
-      var T = leadTier(LAST, phone, next);
+      var T = leadTier(LAST, phone, next, role);
       // Prototype backend: when the passcode build sets window.SC_BACKEND (a Google Apps Script web app),
       // the lead is appended to the Leads tab of the Google Sheet. text/plain avoids a CORS preflight.
       if (window.SC_BACKEND) {
@@ -238,8 +252,9 @@
           fetch(window.SC_BACKEND, { method: 'POST', body: JSON.stringify({
             action: 'lead', name: name, email: email, phone: phone,
             // The prototype Sheet's Intent and Page columns carry the tier and source, so no backend change is needed.
-            intent: 'Tier ' + T.tier + ' (' + T.points + ' pts): ' + (TIMELINE_L[inp.timeline] || '') + '; wants ' + { report: 'the report', call: 'a call', buyers: 'to meet buyers' }[next],
-            practice: LAST ? LAST.practice.key : '', state: inp.state || '', revenue: inp.revenue || '', profit: inp.profit || '',
+            intent: (T.example ? 'Unscored (example numbers, no inputs)' : 'Tier ' + T.tier + ' (' + T.points + ' pts): ' + (TIMELINE_L[inp.timeline] || '')) + '; role ' + role + '; wants ' + { report: 'the breakdown', call: 'a call', buyers: 'introductions' }[next] + (next !== 'report' ? '; REPLY WITHIN A FEW HOURS' : ''),
+            role: role, callback: next !== 'report' ? 'yes' : 'no',
+            practice: LAST ? LAST.practice.key : '', state: inp.state || '', revenue: T.example ? '' : (inp.revenue || ''), profit: T.example ? '' : (inp.profit || ''),
             owners: inp.owners || '', path: LAST ? LAST.path : '', low: LAST ? LAST.lo : '', high: LAST ? LAST.hi : '',
             page: location.pathname + ' | source: ' + [f1.source, f1.medium, f1.campaign, f1.content].filter(Boolean).join(' / ') + (f1.landing && f1.landing !== location.pathname ? ' | landed on ' + f1.landing : ''),
             tier: T.tier, points: T.points, next: next, timeline: inp.timeline || '', ebitda: LAST ? Math.round(LAST.ebitda) : '', fit: LAST ? LAST.practice.fit : '',
@@ -250,7 +265,7 @@
       UNLOCKED = true;
       unlockAll();
       track('report_unlock', { path: LAST ? LAST.path : '', practice: LAST ? LAST.practice.key : '', timeline: LAST ? LAST.input.timeline : '', lead_tier: T.tier, next_step: next, source: (SRC.first || {}).source || '' });
-      if (next !== 'report') { var em = ok.querySelector('em'); if (em) em.insertAdjacentHTML('beforebegin', '<span class="gc-next-note">' + (next === 'call' ? 'A SourceCo advisor will reach out today to set a time. ' : 'A SourceCo advisor will reach out today about buyers who fit. ') + '</span>'); }
+      if (next !== 'report') { var em = ok.querySelector('em'); if (em) em.insertAdjacentHTML('beforebegin', '<span class="gc-next-note">' + (next === 'call' ? 'A SourceCo advisor will reply within a few hours to set a time. ' : 'A SourceCo advisor will reply within a few hours about buyers who fit. No buyer hears your name until you approve it. ') + '</span>'); }
       form.classList.add('is-hidden');
       ok.classList.add('on');
       ok.focus({ preventScroll: true });
@@ -261,6 +276,7 @@
     if (!b) return;
     e.preventDefault();
     var g = document.querySelector('[data-gate] #g-name');
+    var want = b.getAttribute('data-next'); if (want) { var rb = document.querySelector('[data-gate] input[name=next][value=' + want + ']'); if (rb) rb.checked = true; }
     if (g) { g.closest('[data-gate]').scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(function () { g.focus({ preventScroll: true }); }, 450); }
   });
 
@@ -429,7 +445,7 @@
   function boot() {
     document.querySelectorAll('[data-gate-mount]').forEach(mountGate);
     document.querySelectorAll('[data-calc]').forEach(initCalc);
-    if (location.hash === '#buyer-fit') { var bf = document.getElementById('buyer-fit'); if (bf) setTimeout(function () { bf.scrollIntoView(); }, 60); }
+    if (location.hash === '#buyer-fit') { var bf = document.getElementById('buyer-fit'); if (bf) setTimeout(function () { bf.scrollIntoView(); var rb = bf.querySelector('input[name=next][value=buyers]'); if (rb) rb.checked = true; }, 60); }
     document.querySelectorAll('[data-mini]').forEach(initMini);
     document.querySelectorAll('[data-art-est]').forEach(initArtEst);
     document.querySelectorAll('[data-state-filter]').forEach(initStateFilter);
