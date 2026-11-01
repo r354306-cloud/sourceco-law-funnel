@@ -13,6 +13,12 @@
     window.dataLayer.push(o);
   }
   window.scTrack = track;
+  // Global Privacy Control: a visitor who sends the GPC signal has opted out of "sharing" under CCPA.
+  // GTM reads dataLayer.gpc and blocks the LinkedIn Insight Tag and any ad tags for them (see the Webflow README).
+  var GPC = navigator.globalPrivacyControl === true;
+  window.dataLayer.push({ gpc: GPC });
+  window.scGPC = GPC;
+  // Never push names, emails or phone numbers into the dataLayer; events carry only tiers, practice areas and paths.
 
   // ---------- Lead source (first touch and this visit) ----------
   // LinkedIn posts link with utm_source=linkedin&utm_campaign=law-firm-sellers&utm_content=<post id>.
@@ -252,7 +258,7 @@
           fetch(window.SC_BACKEND, { method: 'POST', body: JSON.stringify({
             action: 'lead', name: name, email: email, phone: phone,
             // The prototype Sheet's Intent and Page columns carry the tier and source, so no backend change is needed.
-            intent: (T.example ? 'Unscored (example numbers, no inputs)' : 'Tier ' + T.tier + ' (' + T.points + ' pts): ' + (TIMELINE_L[inp.timeline] || '')) + '; role ' + role + '; wants ' + { report: 'the breakdown', call: 'a call', buyers: 'to compare offers' }[next] + (next !== 'report' ? '; REPLY WITHIN A FEW HOURS' : ''),
+            intent: (T.example ? 'Unscored (example numbers, no inputs)' : 'Tier ' + T.tier + ' (' + T.points + ' pts): ' + (TIMELINE_L[inp.timeline] || '')) + '; role ' + role + '; wants ' + { report: 'the breakdown', call: 'a call', buyers: 'to compare offers' }[next] + (next === 'call' ? '; CALL WITHIN 5 MIN IN BUSINESS HOURS' : next === 'buyers' ? '; REPLY SAME BUSINESS DAY' : ''),
             role: role, callback: next !== 'report' ? 'yes' : 'no',
             practice: LAST ? LAST.practice.key : '', state: inp.state || '', revenue: T.example ? '' : (inp.revenue || ''), profit: T.example ? '' : (inp.profit || ''),
             owners: inp.owners || '', path: LAST ? LAST.path : '', low: LAST ? LAST.lo : '', high: LAST ? LAST.hi : '',
@@ -265,7 +271,7 @@
       UNLOCKED = true;
       unlockAll();
       track('report_unlock', { path: LAST ? LAST.path : '', practice: LAST ? LAST.practice.key : '', timeline: LAST ? LAST.input.timeline : '', lead_tier: T.tier, next_step: next, source: (SRC.first || {}).source || '' });
-      if (next !== 'report') { var em = ok.querySelector('em'); if (em) em.insertAdjacentHTML('beforebegin', '<span class="gc-next-note">' + (next === 'call' ? 'A SourceCo advisor will reply within a few hours to set a time. ' : 'A SourceCo advisor will reply within a few hours about comparing offers from buyers who fit. No buyer hears your name until you approve it. ') + '</span>'); }
+      if (next !== 'report') { var em = ok.querySelector('em'); if (em) em.insertAdjacentHTML('beforebegin', '<span class="gc-next-note">' + (next === 'call' ? 'A SourceCo advisor will call or email the same business day to set a time. ' : 'A SourceCo advisor will reply the same business day about comparing offers from buyers who fit. No buyer hears your name until you approve it. ') + '</span>'); }
       form.classList.add('is-hidden');
       ok.classList.add('on');
       ok.focus({ preventScroll: true });
@@ -442,7 +448,36 @@
     if (d.classList && d.classList.contains('la-more') && d.open) { var s = d.closest('section'); track('cta_click', { cta: 'read_more_' + (s ? s.id : '') }); }
   }, true);
 
+  // ---------- Investor page: law firm buy box ----------
+  function initBuyerForm(form) {
+    var card = form.closest('.bb-card'), ok = card && card.querySelector('.success'), err = form.querySelector('.err');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = function (n) { return form.elements[n] ? String(form.elements[n].value || '').trim() : ''; };
+      var all = function (n) { return Array.prototype.map.call(form.querySelectorAll('input[name=' + n + ']:checked'), function (x) { return x.value; }).join(', '); };
+      var email = v('email');
+      if (!v('name')) { err.textContent = 'Enter your name.'; form.elements.name.focus(); return; }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Enter a valid work email.'; form.elements.email.focus(); return; }
+      if (!v('firm')) { err.textContent = 'Enter your firm or fund.'; form.elements.firm.focus(); return; }
+      if (!v('btype')) { err.textContent = 'Choose what kind of buyer you are.'; form.elements.btype.focus(); return; }
+      if (v('revmin') && v('revmax') && Number(v('revmin')) > Number(v('revmax'))) { err.textContent = 'The revenue range is reversed.'; form.elements.revmin.focus(); return; }
+      err.textContent = '';
+      var f1 = SRC.first || {};
+      if (window.SC_BACKEND) {
+        try {
+          fetch(window.SC_BACKEND, { method: 'POST', body: JSON.stringify({ action: 'buyer', name: v('name'), email: email, firm: v('firm'), btype: v('btype'), states: v('states'),
+            practices: all('practices'), feemodels: all('feemodels'), revmin: v('revmin'), revmax: v('revmax'), structures: all('structures'), stay: v('stay'), notes: v('notes'),
+            page: location.pathname + ' | source: ' + [f1.source, f1.medium, f1.campaign, f1.content].filter(Boolean).join(' / ') }) });
+        } catch (x) { /* never block the confirmation on the backend */ }
+      }
+      track('buyer_submit', { buyer_type: v('btype'), practices: all('practices'), structures: all('structures'), source: f1.source || '' });
+      form.classList.add('is-hidden');
+      if (ok) { ok.classList.add('on'); ok.focus({ preventScroll: true }); }
+    });
+  }
+
   function boot() {
+    document.querySelectorAll('[data-buyer-form]').forEach(initBuyerForm);
     document.querySelectorAll('[data-gate-mount]').forEach(mountGate);
     document.querySelectorAll('[data-calc]').forEach(initCalc);
     if (location.hash === '#buyer-fit') { var bf = document.getElementById('buyer-fit'); if (bf) setTimeout(function () { bf.scrollIntoView(); var rb = bf.querySelector('input[name=next][value=buyers]'); if (rb) rb.checked = true; }, 60); }

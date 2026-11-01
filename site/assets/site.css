@@ -1198,3 +1198,27 @@ figure.xf figcaption::before { content: none; }
 .rm-replies { margin: 0; padding-left: 18px; } .rm-replies li { margin: 7px 0; font-size: 15px; line-height: 1.5; }
 .rm-small code { font-size: 12.5px; background: #F1ECE4; padding: 1px 5px; border-radius: 5px; }
 @media (max-width: 760px) { .rm-replies li { font-size: 14.5px; } }
+
+/* Roadmap playbooks: inbound targets, memo fixes, profile kit */
+.rm-gates.rm-g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.rm-memofix { margin-top: 18px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 14px 18px; }
+.rm-memofix > summary { cursor: pointer; font-weight: 700; color: var(--ink); font-size: 16px; }
+.rm-memofix .rm-launch { margin-top: 14px; }
+.rm-profile { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.rm-profile > div { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; min-width: 0; }
+.rm-profile > div:nth-child(2) { grid-row: span 3; }
+.rm-profile .rm-post p, .rm-profile .rm-post li { font-size: 15px; line-height: 1.55; }
+@media (max-width: 760px) {
+  .rm-gates.rm-g2, .rm-profile { grid-template-columns: minmax(0, 1fr); }
+  .rm-profile > div:nth-child(2) { grid-row: auto; }
+  .rm-profile > div { padding: 16px; }
+}
+/* Investor page buy box */
+.bb-card { max-width: 760px; margin-top: 8px; }
+.bb-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 14px; }
+.bb-row > div { min-width: 0; }
+.bb-checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 10px; }
+.bb-checks .gc-opt { margin-bottom: 8px; }
+.form textarea { width: 100%; font: 500 16px var(--font); color: var(--ink); background: var(--white); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; resize: vertical; box-sizing: border-box; }
+.form textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 4px rgba(201, 149, 47, .16); }
+@media (max-width: 640px) { .bb-row { grid-template-columns: minmax(0, 1fr); } .bb-row.bb-tight { grid-template-columns: repeat(2, minmax(0, 1fr)); } .bb-checks { gap: 0 8px; } .bb-checks .gc-opt { padding: 9px 10px; gap: 8px; font-size: 13.5px; line-height: 1.3; } .bb-card { padding: 20px 16px; } }

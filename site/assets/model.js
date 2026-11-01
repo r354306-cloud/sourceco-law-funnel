@@ -80,6 +80,9 @@
     confido69: { name: 'Confido Legal, Financially Legal ep. 69, The economics of law firm MSOs, Oct 15, 2026', url: 'https://confidolegal.com/financiallylegal/69.-what-is-an-mso-the-economics-of-modern-law-firm-ma', tag: 'PRACTITIONER ESTIMATE' },
     stout_mso: { name: 'Stout, Piper Sandler and Pointe, Law firm investment white paper, Mar 2026', url: 'https://www.pipersandler.com/sites/default/files/document/PSC_PointeLawFirm_MSO_Whitepaper.pdf', tag: 'PRACTITIONER ESTIMATE' },
     dla_2026: { name: 'DLA Piper, Regulations shaping investor and law firm transactions, Aug 31, 2026', url: 'https://www.dlapiper.com/en/insights/publications/2026/08/navigating-regulations-shaping-investor-law-firm-transactions', tag: 'THIRD-PARTY' },
+    axial_teaser: { name: 'Axial, Building an effective teaser: insights from Axial investors, undated (opened Nov 1, 2026)', url: 'https://www.axial.net/forum/building-an-effective-teaser-insights-from-axial-investors/', tag: 'THIRD-PARTY' },
+    hk_az_cool: { name: 'Bloomberg Law (via Holland & Knight), Investors chase law firm back offices as Arizona interest cools, Sep 16, 2026', url: 'https://www.hklaw.com/en/news/intheheadlines/2026/09/investors-chase-law-firm-back-offices-as-arizona-interest-cools', tag: 'THIRD-PARTY' },
+    dla_msoabs: { name: 'DLA Piper, MSOs vs ABS: two models for investment in law firms, Jan 6, 2026', url: 'https://www.dlapiper.com/en-us/insights/publications/2026/01/msos-vs-abs-two-models-investment-in-law-firms', tag: 'THIRD-PARTY' },
     sourceco_owners: { name: 'SourceCo, How it works for owners (process, timeline, fees), 2026', url: 'https://www.sourcecodeals.com/owners', tag: 'SOURCECO FIRST-PARTY' },
     bl_wellbeing: { name: 'Bloomberg Law, 2026 Well-Being Survey (press release), Sep 23, 2026', url: 'https://www.prnewswire.com/news-releases/bloomberg-law-survey-finds-nearly-half-of-attorneys-report-worsening-well-being-302887817.html', tag: 'THIRD-PARTY' }
   };
@@ -118,7 +121,7 @@
   // level: restrict | open | note | standard
   var STATE_NOTES = {
     AZ: { level: 'open', title: 'Arizona licenses nonlawyer ownership (ABS)', text: 'Arizona licenses alternative business structures, so investors can own part of a firm. 151 entities were licensed by January 2026, including KPMG Law US.', src: ['aslj', 'abaj_kpmg'] },
-    CA: { level: 'restrict', title: 'California: written client consent, and limits on fee sharing', text: 'Selling a practice needs written notice at least 90 days before transfer and each client\'s written consent. AB 931 bars sharing contingency fees with out-of-state ABS firms on contracts from January 1, 2026 until January 1, 2030. MSO fee design needs counsel.', src: ['ca117', 'bloomberg_ab931', 'aslj'] },
+    CA: { level: 'restrict', title: 'California: written client consent, no confidential data to nonlawyers, and limits on fee sharing', text: 'Selling a practice needs written notice at least 90 days before transfer and each client\'s written consent. A selling lawyer may not share confidential client information with a nonlawyer in connection with the sale, so only firm-level numbers go to SourceCo. AB 931 bars sharing contingency fees with out-of-state ABS firms on contracts from January 1, 2026 until January 1, 2030. MSO fee design needs counsel.', src: ['ca117', 'bloomberg_ab931', 'aslj'] },
     CO: { level: 'restrict', title: 'Colorado restricts ABS and MSO fee structures', text: 'HB26-1421, effective August 12, 2026, effectively bans ABS firms. MSOs may only be paid flat or hourly fees not tied to profits or recoveries, and clients and competitors can sue.', src: ['hk_co'] },
     DC: { level: 'open', title: 'DC allows limited nonlawyer ownership', text: 'DC has allowed limited nonlawyer ownership since 1991. A Rule 1.17 sale to another lawyer is still the common path.', src: ['sidley'] },
     IL: { level: 'restrict', title: 'Illinois limits MSO fees and influence', text: 'HB 5487, signed August 7, 2026, bars MSOs from interfering with lawyers\' judgment or hiring, and from fees based directly or indirectly on firm revenue, fees or profits.', src: ['hk_il'] },
@@ -305,7 +308,6 @@
   }
   var LAW_MEMOS = {
     pi: { url: 'https://www.sourcecodeals.com/off-market-deal-memos/personal-injury-law-firm-platform-with-mso-ready-structure', title: 'Personal injury law firm platform with MSO-ready structure' },
-    closing: { url: 'https://www.sourcecodeals.com/off-market-deal-memos/multi-office-family-law-platform-with-in-house-attorney-bench', title: '6-office closing and title law firm handling 300+ property closings a month' },
     estate: { url: 'https://www.sourcecodeals.com/off-market-deal-memos/pacific-northwest-family-law-estate-planning-platform', title: 'Pacific Northwest family law and estate planning platform' },
     realestate: { url: 'https://www.sourcecodeals.com/off-market-deal-memos/multi-office-real-estate-led-law-firm-platform-with-mso-ready-structure', title: 'Multi-office real estate-led law firm platform with MSO-ready structure' }
   };
@@ -366,13 +368,13 @@
             return '<label class="gc-opt"><input type="radio" name="next" value="' + o[0] + '"><span>' + o[1] + '</span></label>';
           }).join('') +
         '</fieldset>' +
-        '<p class="consent">By continuing you agree to SourceCo\'s <a href="https://www.sourcecodeals.com/privacy-policy" target="_blank" rel="noopener">privacy policy</a>.</p>' +
+        '<p class="consent">By continuing you agree to SourceCo\'s <a href="https://www.sourcecodeals.com/privacy-policy" target="_blank" rel="noopener">privacy policy</a> and a quarterly email with your updated range. Unsubscribe anytime.</p>' +
         '<button class="btn-dark btn-block" type="submit" data-cta="report_submit">Show my full breakdown <span class="arrow"></span></button>' +
-        '<p class="gc-note">Free. Your breakdown opens on this page right away.</p>' +
+        '<p class="gc-note">Free. Ranges only: no client names or matters. Your breakdown opens on this page right away.</p>' +
         '<p class="err" role="alert"></p>' +
       '</form>' +
       '<div class="success" tabindex="-1" role="status"><b>Unlocked.</b> Your full breakdown is now open on this page. <em>Prototype: the lead goes to the test sheet only.</em></div>' +
-      '<div class="gc-person"><span class="avatar" aria-hidden="true">SC</span><p><b>Rather talk first?</b> A SourceCo advisor replies within a few hours and only calls if you ask. <a href="tel:+16146995764">+1 (614) 699-5764</a></p></div>' +
+      '<div class="gc-person"><span class="avatar" aria-hidden="true">SC</span><p><b>Rather talk first?</b> A SourceCo advisor replies the same business day and only calls if you ask. <a href="tel:+16146995764">+1 (614) 699-5764</a></p></div>' +
     '</div>';
   }
 
