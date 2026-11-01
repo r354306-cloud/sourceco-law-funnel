@@ -65,7 +65,22 @@
     olmstead_value: { name: 'Olmstead & Associates, Law firm value: what is a firm worth, undated', url: 'https://www.illinoislawyernow.com/2026/06/law-firm-value-what-is-a-firm-worth/', tag: 'PRACTITIONER ESTIMATE' },
     sourceco_pnw: { name: 'SourceCo, Pacific Northwest family law and estate planning platform memo, 2026', url: 'https://www.sourcecodeals.com/off-market-deal-memos/pacific-northwest-family-law-estate-planning-platform', tag: 'SOURCECO FIRST-PARTY' },
     sourceco_re: { name: 'SourceCo, Multi-office real estate-led law firm platform memo, 2026', url: 'https://www.sourcecodeals.com/off-market-deal-memos/multi-office-real-estate-led-law-firm-platform-with-mso-ready-structure', tag: 'SOURCECO FIRST-PARTY' },
-    sourceco_memos: { name: 'SourceCo, off-market law firm deal memos, 2025 to 2026', url: 'https://www.sourcecodeals.com/off-market-deal-memos/personal-injury-law-firm-platform-with-mso-ready-structure', tag: 'SOURCECO FIRST-PARTY' }
+    sourceco_memos: { name: 'SourceCo, off-market law firm deal memos, 2025 to 2026', url: 'https://www.sourcecodeals.com/off-market-deal-memos/personal-injury-law-firm-platform-with-mso-ready-structure', tag: 'SOURCECO FIRST-PARTY' },
+    // Added for the roadmap articles (each opened and checked Oct 31, 2026)
+    clio_lt2026: { name: 'Clio, 2026 Legal Trends Report (press release), Oct 26, 2026', url: 'https://www.prnewswire.com/news-releases/clios-2026-legal-trends-report-reveals-record-gains-in-billable-time-as-ai-reshapes-law-firm-economics-302918898.html', tag: 'THIRD-PARTY' },
+    reedsmith: { name: 'Reed Smith, MSOs and alternative structures, 2026', url: 'https://www.reedsmith.com/articles/private-equity-and-the-business-of-law-recent-market-trends-in-msos-and-alternative-structures/', tag: 'THIRD-PARTY' },
+    hk_wood: { name: 'Holland & Knight (Law360), Wood Smith and Charlesbank MSO deal, Oct 19, 2026', url: 'https://www.hklaw.com/en/news/intheheadlines/2026/10/wood-smith-charlesbank-capital-ink-pioneering-mso-deal', tag: 'THIRD-PARTY' },
+    charlesbank: { name: 'Charlesbank, Wood Smith Henning & Berman forms an MSO, Oct 19, 2026', url: 'https://www.charlesbank.com/news/wood-smith-henning-berman-announces-formation-of-mso-and-strategic-growth-investment-from-charlesbank-capital-partners/', tag: 'PRIMARY' },
+    bloomberg_mm: { name: 'Bloomberg Law, Morgan & Morgan weighs a minority stake sale, Jun 2026', url: 'https://news.bloomberglaw.com/business-and-practice/personal-injury-titan-morgan-morgan-weighs-minority-stake-sale', tag: 'THIRD-PARTY' },
+    bloomberg_pi: { name: 'Bloomberg Law, Private equity woos personal injury firms, May 26, 2026', url: 'https://news.bloomberglaw.com/business-and-practice/private-equity-woos-personal-injury-law-firms-with-profits-tech', tag: 'THIRD-PARTY' },
+    pepro_foy: { name: 'PE Professional, Orion Legal adds John Foy & Associates, Jun 23, 2026', url: 'https://peprofessional.com/2026/06/orion-legal-continues-plaintiff-law-firm-roll-up/', tag: 'THIRD-PARTY' },
+    legalfutures_orion: { name: 'Legal Futures, Dudley DeBosier and Orion Legal, Jan 27, 2026', url: 'https://www.legalfutures.co.uk/latest-news/private-equity-opens-door-to-us-law-firms-with-mso-deal', tag: 'THIRD-PARTY' },
+    atl_noncompete: { name: 'Above the Law, Private equity investment and ethical obligations, Sep 3, 2026', url: 'https://abovethelaw.com/2026/09/private-equity-investment-in-law-firms-floated-as-one-neat-trick-to-get-around-ethical-obligations/', tag: 'THIRD-PARTY' },
+    atl_shopper: { name: 'Above the Law, Clio secret shopper study, Oct 8, 2024', url: 'https://abovethelaw.com/2024/10/law-firms-failing-at-the-single-most-basic-lawyering-task/', tag: 'THIRD-PARTY' },
+    confido69: { name: 'Confido Legal, Financially Legal ep. 69, The economics of law firm MSOs, Oct 15, 2026', url: 'https://confidolegal.com/financiallylegal/69.-what-is-an-mso-the-economics-of-modern-law-firm-ma', tag: 'PRACTITIONER ESTIMATE' },
+    stout_mso: { name: 'Stout, Piper Sandler and Pointe, Law firm investment white paper, Mar 2026', url: 'https://www.pipersandler.com/sites/default/files/document/PSC_PointeLawFirm_MSO_Whitepaper.pdf', tag: 'PRACTITIONER ESTIMATE' },
+    dla_2026: { name: 'DLA Piper, Regulations shaping investor and law firm transactions, Aug 31, 2026', url: 'https://www.dlapiper.com/en/insights/publications/2026/08/navigating-regulations-shaping-investor-law-firm-transactions', tag: 'THIRD-PARTY' },
+    bl_wellbeing: { name: 'Bloomberg Law, 2026 Well-Being Survey (press release), Sep 23, 2026', url: 'https://www.prnewswire.com/news-releases/bloomberg-law-survey-finds-nearly-half-of-attorneys-report-worsening-well-being-302887817.html', tag: 'THIRD-PARTY' }
   };
 
   // ---------- Practice areas ----------
