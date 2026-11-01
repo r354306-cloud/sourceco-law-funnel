@@ -621,6 +621,11 @@ td a.go { white-space: nowrap; font-weight: 600; }
 .related-top { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
 .related-h { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); margin: 0; }
 .related-all { font-weight: 650; text-decoration: none; color: var(--gold-text); }
+.related-sc { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 22px; margin: 18px 0 0; padding-top: 16px; border-top: 1px solid var(--line); font-size: 15px; }
+.related-sc span:first-child { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); width: 100%; }
+.related-sc a { font-weight: 600; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
+.related-sc a:hover { border-color: var(--gold2, #DDB04F); }
+@media (max-width: 760px) { .related-sc { flex-direction: column; gap: 10px; } }
 .guide-list.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 900px) { .guide-list.three { grid-template-columns: minmax(0, 1fr); } }
 a.btn-gold, a.btn-gold:visited, a.btn-gold:hover { color: var(--gold-ink) !important; text-decoration: none; }

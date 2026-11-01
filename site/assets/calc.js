@@ -123,7 +123,7 @@
     var mini = document.createElement('a');
     mini.className = 'rc-mini'; mini.href = '#'; mini.setAttribute('aria-hidden', 'true'); mini.tabIndex = -1;
     mini.addEventListener('click', function (e) { e.preventDefault(); root.querySelector('.rcard').scrollIntoView({ behavior: 'smooth', block: 'start' }); track('cta_click', { cta: 'mobile_range_bar' }); });
-    document.body.appendChild(mini);
+    (document.querySelector('.sc-law') || document.body).appendChild(mini);
     var cardSeen = false, inCalc = false;
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (en) { cardSeen = en[0].isIntersecting; paintMini(); }).observe(root.querySelector('.rcard'));
