@@ -362,7 +362,7 @@
         '<label class="fl" for="g-role">Your role</label><select id="g-role" name="role" required><option value="">Choose one</option><option value="owner">Owner or equity partner</option><option value="lawyer">Other lawyer at the firm</option><option value="advisor">Advisor, banker or broker</option><option value="other">Other</option></select>' +
         '<label class="fl" for="g-phone">Phone <span class="opt">optional, only used if you ask for a call</span></label><input id="g-phone" name="phone" type="tel" autocomplete="tel" placeholder="(555) 555-0123">' +
         '<fieldset class="gc-next"><legend class="fl">What would help most?</legend>' +
-          [['report', 'Just the breakdown'], ['call', 'A call about my number'], ['buyers', 'Introductions to buyers who fit']].map(function (o, i) {
+          [['report', 'Just the breakdown'], ['call', 'A call about my number'], ['buyers', 'Compare offers from buyers who fit']].map(function (o, i) {
             return '<label class="gc-opt"><input type="radio" name="next" value="' + o[0] + '"><span>' + o[1] + '</span></label>';
           }).join('') +
         '</fieldset>' +

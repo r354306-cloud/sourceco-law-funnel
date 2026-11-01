@@ -252,7 +252,7 @@
           fetch(window.SC_BACKEND, { method: 'POST', body: JSON.stringify({
             action: 'lead', name: name, email: email, phone: phone,
             // The prototype Sheet's Intent and Page columns carry the tier and source, so no backend change is needed.
-            intent: (T.example ? 'Unscored (example numbers, no inputs)' : 'Tier ' + T.tier + ' (' + T.points + ' pts): ' + (TIMELINE_L[inp.timeline] || '')) + '; role ' + role + '; wants ' + { report: 'the breakdown', call: 'a call', buyers: 'introductions' }[next] + (next !== 'report' ? '; REPLY WITHIN A FEW HOURS' : ''),
+            intent: (T.example ? 'Unscored (example numbers, no inputs)' : 'Tier ' + T.tier + ' (' + T.points + ' pts): ' + (TIMELINE_L[inp.timeline] || '')) + '; role ' + role + '; wants ' + { report: 'the breakdown', call: 'a call', buyers: 'to compare offers' }[next] + (next !== 'report' ? '; REPLY WITHIN A FEW HOURS' : ''),
             role: role, callback: next !== 'report' ? 'yes' : 'no',
             practice: LAST ? LAST.practice.key : '', state: inp.state || '', revenue: T.example ? '' : (inp.revenue || ''), profit: T.example ? '' : (inp.profit || ''),
             owners: inp.owners || '', path: LAST ? LAST.path : '', low: LAST ? LAST.lo : '', high: LAST ? LAST.hi : '',
@@ -265,7 +265,7 @@
       UNLOCKED = true;
       unlockAll();
       track('report_unlock', { path: LAST ? LAST.path : '', practice: LAST ? LAST.practice.key : '', timeline: LAST ? LAST.input.timeline : '', lead_tier: T.tier, next_step: next, source: (SRC.first || {}).source || '' });
-      if (next !== 'report') { var em = ok.querySelector('em'); if (em) em.insertAdjacentHTML('beforebegin', '<span class="gc-next-note">' + (next === 'call' ? 'A SourceCo advisor will reply within a few hours to set a time. ' : 'A SourceCo advisor will reply within a few hours about buyers who fit. No buyer hears your name until you approve it. ') + '</span>'); }
+      if (next !== 'report') { var em = ok.querySelector('em'); if (em) em.insertAdjacentHTML('beforebegin', '<span class="gc-next-note">' + (next === 'call' ? 'A SourceCo advisor will reply within a few hours to set a time. ' : 'A SourceCo advisor will reply within a few hours about comparing offers from buyers who fit. No buyer hears your name until you approve it. ') + '</span>'); }
       form.classList.add('is-hidden');
       ok.classList.add('on');
       ok.focus({ preventScroll: true });
