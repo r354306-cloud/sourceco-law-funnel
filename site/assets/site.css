@@ -577,6 +577,12 @@ td a.go { white-space: nowrap; font-weight: 600; }
 .gatecard .err { color: var(--bad); }
 .gatecard .success { background: #EEF6F0; border-color: #C5E0CD; color: #1F4D33; }
 .gatecard .success b { color: #14381F; }
+.gatecard .fl .opt { font-weight: 500; color: var(--muted); font-size: 12.5px; margin-left: 4px; }
+.gc-next { border: 0; padding: 0; margin: 4px 0 0; }
+.gc-next .fl { margin: 14px 0 8px; }
+.gc-opt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 12px; margin-bottom: 8px; cursor: pointer; font-size: 14.5px; color: var(--ink); font-weight: 600; }
+.gc-opt input { width: 18px; height: 18px; accent-color: #B8862B; margin: 0; flex: none; }
+.gc-opt:has(input:checked) { border-color: var(--gold); background: var(--gold-tint); }
 .gc-person { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line-2); font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
 .gc-person p { margin: 0; }
 .gc-person .avatar { width: 42px; height: 42px; font-size: 14px; }

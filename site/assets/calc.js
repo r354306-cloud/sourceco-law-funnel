@@ -14,6 +14,35 @@
   }
   window.scTrack = track;
 
+  // ---------- Lead source (first touch and this visit) ----------
+  // LinkedIn posts link with utm_source=linkedin&utm_campaign=law-firm-sellers&utm_content=<post id>.
+  var SRC_KEY = 'sc_src';
+  function readSource() {
+    var q = new URLSearchParams(location.search), now = {};
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) { if (q.get(k)) now[k.slice(4)] = q.get(k).slice(0, 80); });
+    if (!now.source && document.referrer && document.referrer.indexOf(location.hostname) < 0) now.source = document.referrer.replace(/^https?:\/\//, '').split('/')[0];
+    now.landing = location.pathname;
+    var first = null;
+    try { first = JSON.parse(localStorage.getItem(SRC_KEY) || 'null'); } catch (x) { first = null; }
+    if (!first && (now.source || now.campaign)) { first = now; try { localStorage.setItem(SRC_KEY, JSON.stringify(now)); } catch (x) {} }
+    return { first: first || now, last: now };
+  }
+  var SRC = readSource();
+
+  // ---------- Lead tier: who SourceCo calls first ----------
+  // A = call today, B = same-day email and a call if asked, C = report plus a slow follow-up.
+  function leadTier(r, phone, next) {
+    if (!r || r.empty) return { tier: 'C', points: 0 };
+    var i = r.input || {}, p = 0;
+    p += r.revenue >= 3e6 ? 3 : r.revenue >= 1e6 ? 2 : r.revenue >= 5e5 ? 1 : 0;
+    p += { '12mo': 3, capital: 2, '2to3': 1 }[i.timeline] || 0;
+    p += { high: 2, middle: 1, neutral: 1 }[r.practice.fit] || 0;
+    if (phone) p += 1;
+    if (next === 'call' || next === 'buyers') p += 2;
+    return { tier: p >= 7 ? 'A' : p >= 4 ? 'B' : 'C', points: p };
+  }
+  var TIMELINE_L = { curious: 'Just curious', '12mo': 'Selling within 12 months', '2to3': '2 to 3 years out', capital: 'Capital or a partner' };
+
   var FIELDS = ['practice', 'state', 'revenue', 'profit', 'owners', 'salary', 'pipeline', 'orig', 'flow', 'stay', 'timeline'];
   var PARAMS = { practice: 'practice', state: 'state', rev: 'revenue', revenue: 'revenue', profit: 'profit', owners: 'owners', salary: 'salary', pipeline: 'pipeline', orig: 'orig', flow: 'flow', stay: 'stay', timeline: 'timeline' };
   var SHORT = { revenue: 'rev' };
@@ -195,25 +224,33 @@
       err.textContent = '';
       // PRODUCTION: POST to the Webflow form or HubSpot Forms API here, e.g.
       // fetch('https://api.hsforms.com/submissions/v3/integration/submit/<portalId>/<formGuid>', { method: 'POST', ... })
-      // Include: name, email, practice, state, revenue band, path, lo, hi, timeline.
+      // Send the same fields as the prototype payload below: tier, points, next, timeline, ebitda, fit and the source fields
+      // (first-touch source/medium/campaign/content/landing). Route tier A to a person the same business day.
+      var phone = form.elements.phone ? form.elements.phone.value.trim() : '';
+      var next = (form.querySelector('[name=next]:checked') || {}).value || 'report';
+      var T = leadTier(LAST, phone, next);
       // Prototype backend: when the passcode build sets window.SC_BACKEND (a Google Apps Script web app),
       // the lead is appended to the Leads tab of the Google Sheet. text/plain avoids a CORS preflight.
       if (window.SC_BACKEND) {
         var inp = (LAST && LAST.input) || {};
         try {
+          var f1 = SRC.first || {};
           fetch(window.SC_BACKEND, { method: 'POST', body: JSON.stringify({
-            action: 'lead', name: name, email: email,
-            phone: form.elements.phone ? form.elements.phone.value : '',
-            intent: (form.querySelector('[name=intent]:checked') || {}).value || '',
+            action: 'lead', name: name, email: email, phone: phone,
+            // The prototype Sheet's Intent and Page columns carry the tier and source, so no backend change is needed.
+            intent: 'Tier ' + T.tier + ' (' + T.points + ' pts): ' + (TIMELINE_L[inp.timeline] || '') + '; wants ' + { report: 'the report', call: 'a call', buyers: 'to meet buyers' }[next],
             practice: LAST ? LAST.practice.key : '', state: inp.state || '', revenue: inp.revenue || '', profit: inp.profit || '',
             owners: inp.owners || '', path: LAST ? LAST.path : '', low: LAST ? LAST.lo : '', high: LAST ? LAST.hi : '',
-            page: location.pathname
+            page: location.pathname + ' | source: ' + [f1.source, f1.medium, f1.campaign, f1.content].filter(Boolean).join(' / ') + (f1.landing && f1.landing !== location.pathname ? ' | landed on ' + f1.landing : ''),
+            tier: T.tier, points: T.points, next: next, timeline: inp.timeline || '', ebitda: LAST ? Math.round(LAST.ebitda) : '', fit: LAST ? LAST.practice.fit : '',
+            src_source: f1.source || '', src_medium: f1.medium || '', src_campaign: f1.campaign || '', src_content: f1.content || '', src_landing: f1.landing || ''
           }) });
         } catch (x) { /* never block the unlock on the backend */ }
       }
       UNLOCKED = true;
       unlockAll();
-      track('report_unlock', { path: LAST ? LAST.path : '', practice: LAST ? LAST.practice.key : '', timeline: LAST ? LAST.input.timeline : '' });
+      track('report_unlock', { path: LAST ? LAST.path : '', practice: LAST ? LAST.practice.key : '', timeline: LAST ? LAST.input.timeline : '', lead_tier: T.tier, next_step: next, source: (SRC.first || {}).source || '' });
+      if (next !== 'report') { var em = ok.querySelector('em'); if (em) em.insertAdjacentHTML('beforebegin', '<span class="gc-next-note">' + (next === 'call' ? 'A SourceCo advisor will reach out today to set a time. ' : 'A SourceCo advisor will reach out today about buyers who fit. ') + '</span>'); }
       form.classList.add('is-hidden');
       ok.classList.add('on');
       ok.focus({ preventScroll: true });

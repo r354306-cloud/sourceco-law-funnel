@@ -337,6 +337,12 @@
         '<!-- PRODUCTION: send to the Webflow form or HubSpot Forms API (see calc.js). Nothing is sent in this prototype. -->' +
         '<label class="fl" for="g-name">Full name</label><input id="g-name" name="name" autocomplete="name" required placeholder="Jane Smith">' +
         '<label class="fl" for="g-email">Email</label><input id="g-email" name="email" type="email" autocomplete="email" required placeholder="you@yourfirm.com">' +
+        '<label class="fl" for="g-phone">Phone <span class="opt">optional, only used if you ask for a call</span></label><input id="g-phone" name="phone" type="tel" autocomplete="tel" placeholder="(555) 555-0123">' +
+        '<fieldset class="gc-next"><legend class="fl">What would help most?</legend>' +
+          [['report', 'Just the report'], ['call', 'A call about my number'], ['buyers', 'Meet buyers who fit']].map(function (o, i) {
+            return '<label class="gc-opt"><input type="radio" name="next" value="' + o[0] + '"' + (i === 0 ? ' checked' : '') + '><span>' + o[1] + '</span></label>';
+          }).join('') +
+        '</fieldset>' +
         '<p class="consent">By continuing you agree to SourceCo\'s <a href="https://www.sourcecodeals.com/privacy-policy" target="_blank" rel="noopener">privacy policy</a>.</p>' +
         '<button class="btn-dark btn-block" type="submit" data-cta="report_submit">Show my full breakdown <span class="arrow"></span></button>' +
         '<p class="gc-note">Free and instant, with a PDF report by email.</p>' +
