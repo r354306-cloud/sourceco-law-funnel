@@ -80,6 +80,7 @@
     confido69: { name: 'Confido Legal, Financially Legal ep. 69, The economics of law firm MSOs, Oct 15, 2026', url: 'https://confidolegal.com/financiallylegal/69.-what-is-an-mso-the-economics-of-modern-law-firm-ma', tag: 'PRACTITIONER ESTIMATE' },
     stout_mso: { name: 'Stout, Piper Sandler and Pointe, Law firm investment white paper, Mar 2026', url: 'https://www.pipersandler.com/sites/default/files/document/PSC_PointeLawFirm_MSO_Whitepaper.pdf', tag: 'PRACTITIONER ESTIMATE' },
     dla_2026: { name: 'DLA Piper, Regulations shaping investor and law firm transactions, Aug 31, 2026', url: 'https://www.dlapiper.com/en/insights/publications/2026/08/navigating-regulations-shaping-investor-law-firm-transactions', tag: 'THIRD-PARTY' },
+    sourceco_owners: { name: 'SourceCo, How it works for owners (process, timeline, fees), 2026', url: 'https://www.sourcecodeals.com/owners', tag: 'SOURCECO FIRST-PARTY' },
     bl_wellbeing: { name: 'Bloomberg Law, 2026 Well-Being Survey (press release), Sep 23, 2026', url: 'https://www.prnewswire.com/news-releases/bloomberg-law-survey-finds-nearly-half-of-attorneys-report-worsening-well-being-302887817.html', tag: 'THIRD-PARTY' }
   };
 

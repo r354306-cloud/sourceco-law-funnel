@@ -1194,3 +1194,7 @@ figure.xf figcaption::before { content: none; }
 @media (max-width: 960px) { .rm-team { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .rm-team, .rm-gates { grid-template-columns: minmax(0, 1fr); gap: 8px; } .rm-team > div { padding: 14px 16px; } }
 .gc-opt[hidden] { display: none !important; }
+.rm-item.ch-out::before { background: #2F5D8A; } .ch-out .rm-ch { color: #2F5D8A; }
+.rm-replies { margin: 0; padding-left: 18px; } .rm-replies li { margin: 7px 0; font-size: 15px; line-height: 1.5; }
+.rm-small code { font-size: 12.5px; background: #F1ECE4; padding: 1px 5px; border-radius: 5px; }
+@media (max-width: 760px) { .rm-replies li { font-size: 14.5px; } }
