@@ -1222,3 +1222,30 @@ figure.xf figcaption::before { content: none; }
 .form textarea { width: 100%; font: 500 16px var(--font); color: var(--ink); background: var(--white); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; resize: vertical; box-sizing: border-box; }
 .form textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 4px rgba(201, 149, 47, .16); }
 @media (max-width: 640px) { .bb-row { grid-template-columns: minmax(0, 1fr); } .bb-row.bb-tight { grid-template-columns: repeat(2, minmax(0, 1fr)); } .bb-checks { gap: 0 8px; } .bb-checks .gc-opt { padding: 9px 10px; gap: 8px; font-size: 13.5px; line-height: 1.3; } .bb-card { padding: 20px 16px; } }
+
+/* Reviewer name is hidden until SourceCo names one (the Webflow export fills it in) */
+[data-rv] { display: none; }
+.rm-url { color: var(--ink); border-bottom: 1px dashed #C9B48A; word-break: break-all; }
+.rm-lh { margin: 22px 0 10px; } .rm-lh:first-of-type { margin-top: 6px; }
+/* Start page: 10-minute review path and decisions */
+.start-brief { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 22px; margin: 0 0 22px; }
+.sb-col { background: var(--white); border: 1px solid var(--line); border-radius: 22px; padding: 26px 26px 20px; min-width: 0; }
+.sb-decide { background: #FBF6EA; border-color: #EAD9AE; }
+.sb-h { font-size: 12.5px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-text, #8F6823); margin: 0 0 14px; }
+.sb-steps, .sb-list { list-style: none; margin: 0; padding: 0; counter-reset: sb; }
+.sb-steps li, .sb-list li { counter-increment: sb; border-top: 1px solid var(--line); }
+.sb-decide .sb-list li { border-color: #EAD9AE; }
+.sb-steps li:first-child, .sb-list li:first-child { border-top: 0; }
+.sb-steps a, .sb-list a { display: grid; grid-template-columns: 62px minmax(0, 1fr); column-gap: 14px; padding: 13px 0; text-decoration: none; color: inherit; }
+.sb-list a { grid-template-columns: 30px minmax(0, 1fr); }
+.sb-list a::before { content: counter(sb); grid-row: span 2; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--paper); font: 700 12.5px/24px var(--font); text-align: center; margin-top: 1px; }
+.sb-t { grid-row: span 2; align-self: start; font-size: 12.5px; font-weight: 700; color: #6B4E14; background: var(--gold-tint); border-radius: 999px; padding: 4px 0; text-align: center; margin-top: 1px; }
+.sb-steps b, .sb-list b { font-size: 16.5px; color: var(--ink); line-height: 1.3; }
+.sb-steps a:hover b, .sb-list a:hover b { text-decoration: underline; text-underline-offset: 3px; }
+.sb-d, .sb-list span { font-size: 14.5px; line-height: 1.5; color: var(--ink-2); margin-top: 3px; }
+.sb-inside { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin: 0 0 22px; }
+.sb-inside div { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; }
+.sb-inside b { display: block; font-size: 28px; letter-spacing: -0.02em; color: var(--ink); line-height: 1.1; }
+.sb-inside span { display: block; font-size: 13px; line-height: 1.4; color: var(--muted); margin-top: 4px; }
+@media (max-width: 960px) { .start-brief { grid-template-columns: minmax(0, 1fr); } .sb-inside { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .sb-col { padding: 20px 16px 12px; } .sb-inside { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sb-steps a { grid-template-columns: 54px minmax(0, 1fr); column-gap: 12px; } }

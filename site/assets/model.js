@@ -121,9 +121,9 @@
   // level: restrict | open | note | standard
   var STATE_NOTES = {
     AZ: { level: 'open', title: 'Arizona licenses nonlawyer ownership (ABS)', text: 'Arizona licenses alternative business structures, so investors can own part of a firm. 151 entities were licensed by January 2026, including KPMG Law US.', src: ['aslj', 'abaj_kpmg'] },
-    CA: { level: 'restrict', title: 'California: written client consent, no confidential data to nonlawyers, and limits on fee sharing', text: 'Selling a practice needs written notice at least 90 days before transfer and each client\'s written consent. A selling lawyer may not share confidential client information with a nonlawyer in connection with the sale, so only firm-level numbers go to SourceCo. AB 931 bars sharing contingency fees with out-of-state ABS firms on contracts from January 1, 2026 until January 1, 2030. MSO fee design needs counsel.', src: ['ca117', 'bloomberg_ab931', 'aslj'] },
+    CA: { level: 'restrict', title: 'California: written client consent, no confidential data to nonlawyers, and limits on fee sharing', text: 'You must sell all or substantially all of the practice, with written notice at least 90 days before transfer and each client\'s written consent. A selling lawyer may not share confidential client information with a nonlawyer in connection with the sale, so only firm-level numbers go to SourceCo. AB 931 bars California lawyers from sharing legal fees with out-of-state ABS firms on contracts from January 1, 2026 until January 1, 2030, with narrow exceptions. MSO fee design needs counsel.', src: ['ca117', 'ab931_text', 'aslj'] },
     CO: { level: 'restrict', title: 'Colorado restricts ABS and MSO fee structures', text: 'HB26-1421, effective August 12, 2026, effectively bans ABS firms. MSOs may only be paid flat or hourly fees not tied to profits or recoveries, and clients and competitors can sue.', src: ['hk_co'] },
-    DC: { level: 'open', title: 'DC allows limited nonlawyer ownership', text: 'DC has allowed limited nonlawyer ownership since 1991. A Rule 1.17 sale to another lawyer is still the common path.', src: ['sidley'] },
+    DC: { level: 'open', title: 'DC allows limited nonlawyer ownership', text: 'Allowed since 1991, within limits. A Rule 1.17 sale to another lawyer is still the common path.', src: ['sidley'] },
     IL: { level: 'restrict', title: 'Illinois limits MSO fees and influence', text: 'HB 5487, signed August 7, 2026, bars MSOs from interfering with lawyers\' judgment or hiring, and from fees based directly or indirectly on firm revenue, fees or profits.', src: ['hk_il'] },
     FL: { level: 'note', title: 'Florida: name an inventory attorney', text: 'Florida requires lawyers to designate an inventory attorney who steps in if they cannot practice. Sales follow the standard Rule 1.17 path.', src: ['flbar_inv'] },
     MA: { level: 'note', title: 'Massachusetts: no geographic cease-practice rule', text: 'Massachusetts\' Rule 1.17 does not require the seller to stop practicing in a geographic area. Client notice still applies.', src: ['ma117'] },
@@ -327,11 +327,11 @@
     var payLabel = r.path === 'B' ? 'Using the 70/30 example from one 2026 guide. Terms vary by buyer.' : 'Illustration only: half at close, half as an earnout over several years. Terms vary.';
     var deferLabel = r.path === 'B' ? 'Rollover equity or earnout' : 'Earnout tied to clients who stay';
     var st = (r.input && r.input.state) || '', fit = r.practice.fit;
-    var strict = { CA: 'California', CO: 'Colorado', IL: 'Illinois', TN: 'Tennessee', TX: 'Texas' }[st];
+    var MSO_NOTE = { CO: ', paid only a flat or hourly fee under Colorado\'s HB26-1421', IL: ', with a fee not based on firm revenue, fees or profits (Illinois HB 5487)', TX: ', with a flat or cost-plus fee (Texas Opinion 706 bars percentage-of-revenue fees)', CA: ', with a fee design your California ethics counsel approves', TN: ', if your ethics counsel confirms the structure (Tennessee kept its ownership ban)' };
     var buyers = r.path === 'B'
       ? ['A regional or national law firm buying for scale']
           .concat(fit === 'high' || fit === 'middle'
-            ? ['An investor-backed services platform (MSO)' + (strict ? ', with a flat or cost-plus fee under ' + strict + '\'s rules' : ', where your state allows it')]
+            ? ['An investor-backed services platform (MSO)' + (MSO_NOTE[st] || ', where your state allows it')]
             : ['Investor platforms are less common for this practice area; firm buyers lead'])
           .concat(st === 'AZ' ? ['An Arizona ABS firm, if you are open to licensed outside owners'] : [])
       : ['Another attorney or local firm, under Rule 1.17', 'An associate or partner as internal successor', 'A regional firm adding your practice area'];
@@ -373,7 +373,7 @@
         '<p class="gc-note">Free. Ranges only: no client names or matters. Your breakdown opens on this page right away.</p>' +
         '<p class="err" role="alert"></p>' +
       '</form>' +
-      '<div class="success" tabindex="-1" role="status"><b>Unlocked.</b> Your full breakdown is now open on this page. <em>Prototype: the lead goes to the test sheet only.</em></div>' +
+      '<div class="success" tabindex="-1" role="status"><b>Unlocked.</b> Your full breakdown is now open on this page. <em>Prototype: this goes to Ricky\'s review sheet, not to a SourceCo inbox.</em></div>' +
       '<div class="gc-person"><span class="avatar" aria-hidden="true">SC</span><p><b>Rather talk first?</b> A SourceCo advisor replies the same business day and only calls if you ask. <a href="tel:+16146995764">+1 (614) 699-5764</a></p></div>' +
     '</div>';
   }

@@ -118,7 +118,7 @@
       root.setAttribute('data-path', r.path);
       root._last = r;
       paintDetails(r);
-      if (root._mini) root._mini.innerHTML = r.empty ? '<b>Enter your fees</b><span>See range &#8595;</span>' : '<b>' + M.money(r.lo) + ' to ' + M.money(r.hi) + '</b><span>See details &#8595;</span>';
+      if (root._mini) root._mini.innerHTML = r.empty ? '<b>Enter your fees</b><span>See range &#8595;</span>' : '<b>' + (!touched && !fromUrl ? 'Example: ' : '') + M.money(r.lo) + ' to ' + M.money(r.hi) + '</b><span>See details &#8595;</span>';
       var share = root.querySelector('[data-share]');
       if (share) share.setAttribute('data-url', shareUrl(d));
     }
