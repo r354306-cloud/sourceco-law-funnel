@@ -1236,7 +1236,7 @@ figure.xf figcaption::before { content: none; }
 .rm-url { color: var(--ink); border-bottom: 1px dashed #C9B48A; word-break: break-all; }
 .rm-lh { margin: 22px 0 10px; } .rm-lh:first-of-type { margin-top: 6px; }
 /* Start page: 10-minute review path and decisions */
-.start-brief { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 22px; margin: 0 0 22px; }
+.start-brief { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; margin: 0 0 22px; }
 .sb-col { background: var(--white); border: 1px solid var(--line); border-radius: 22px; padding: 26px 26px 20px; min-width: 0; }
 .sb-decide { background: #FBF6EA; border-color: #EAD9AE; }
 .sb-h { font-size: 12.5px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-text, #8F6823); margin: 0 0 14px; }
