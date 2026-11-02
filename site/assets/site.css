@@ -1249,3 +1249,13 @@ figure.xf figcaption::before { content: none; }
 .sb-inside span { display: block; font-size: 13px; line-height: 1.4; color: var(--muted); margin-top: 4px; }
 @media (max-width: 960px) { .start-brief { grid-template-columns: minmax(0, 1fr); } .sb-inside { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .sb-col { padding: 20px 16px 12px; } .sb-inside { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sb-steps a { grid-template-columns: 54px minmax(0, 1fr); column-gap: 12px; } }
+
+/* Organic lead plan walkthrough */
+.og-step .sec-head { margin-bottom: 12px; }
+.og-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; }
+.og-how, .og-proof { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 18px 22px; min-width: 0; }
+.og-proof { background: #FBF6EA; border-color: #EAD9AE; }
+.og-how p { margin: 0 0 10px; font-size: 16px; line-height: 1.6; max-width: 62ch; }
+.og-proof ul { margin: 0; padding-left: 18px; } .og-proof li { margin: 6px 0; font-size: 15px; line-height: 1.5; }
+.rm-artlink .btn-line { margin-left: 8px; }
+@media (max-width: 760px) { .og-grid { grid-template-columns: minmax(0, 1fr); } .og-how, .og-proof { padding: 16px; } .rm-artlink .btn-line { margin: 8px 0 0; } }
